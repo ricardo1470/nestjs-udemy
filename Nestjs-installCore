@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# Path: scratch/Nestjs-installCore
+# install dependencies
+# set up  TypeScript compiler settings
+# create a a Nestjs module and a controller
+# Start the app
+
+# colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+ENDCOLOR="\e[0m"
+
+# install dependencies
+echo -e "${BLUE}Installing Dependencies...${ENDCOLOR}"
+
+# update  packages
+echo -e "${BLUE}update packages...${ENDCOLOR}"
+sudo apt-get update -y
+echo -e "${GREEN}Done!${ENDCOLOR}"
+sleep 3
+
+# ugrade packages
+echo -e "${BLUE}upgrade packages...${ENDCOLOR}"
+sudo apt-get upgrade -y
+echo -e "${GREEN}Done!${ENDCOLOR}"
+sleep 3
+
+# init node project
+echo -e "${BLUE}init node...${ENDCOLOR}"
+if [ -d "node_modules" ]; then
+    echo -e "${YELLOW}node_modules already exists!${ENDCOLOR}"
+else
+    npm init -y
+    echo -e "${GREEN}Done!${ENDCOLOR}"
+fi
+sleep 3
+
+echo -e "${BLUE}review if exists modules${ENDCOLOR}"
+if [ -d "node_modules" ]; then
+    echo -e "${YELLOW}node_modules already exists!${ENDCOLOR}"
+else
+    echo -e "${BLUE}Installing Nestjs Core...${ENDCOLOR}"
+    npm install @nestjs/common@7.6.17 @nestjs/core@7.6.17 @nestjs/platform-express@7.6.17 reflect-metadata@0.1.13 typescript@4.3.2
+    echo -e "${GREEN}Nestjs Core Installed${ENDCOLOR}"
+fi
+sleep 3
+
+# set up  TypeScript compiler settings
+echo -e "${BLUE}next step is to set up the TypeScript compiler settings...${ENDCOLOR}"
+# Typescript file
+# Path: scratch/Nestjs-installCore
+#check if tsconfig file exists
+echo -e "${BLUE}Creating tsconfig.json...${ENDCOLOR}"
+
+if [ -f tsconfig.json ]; then
+    echo -e "${GREEN}tsconfig.json exists.${ENDCOLOR}"
+else
+    echo -e "${RED}tsconfig.json does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating tsconfig.json...${ENDCOLOR}"
+    touch tsconfig.json
+    echo -e "${GREEN}tsconfig.json created${ENDCOLOR}"
+fi
+sleep 3
+
+# check if tsconfig file is empty
+if [ -s tsconfig.json ]; then
+    echo -e "${YELLOW}tsconfig.json is not empty....${ENDCOLOR}"
+else
+    echo -e "${RED}tsconfig.json is empty...${ENDCOLOR}"
+    echo -e "${YELLOW}Adding content to tsconfig.json...${ENDCOLOR}"
+    echo '{
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "commonjs",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+    }
+}' >> tsconfig.json
+    echo -e "${GREEN}tsconfig.json updated${ENDCOLOR}"
+fi
+sleep 3
+
+# create a a Nestjs module and a controller
+echo -e "${BLUE}next step is to create a a Nestjs module and a controller${ENDCOLOR}"
+sleep 3
+
+# create a src folder
+echo -e "${BLUE}Creating src folder...${ENDCOLOR}"
+if [ -d "src" ]; then
+    echo -e "${GREEN}src folder exists.${ENDCOLOR}"
+else
+    echo -e "${RED}src folder does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating src folder...${ENDCOLOR}"
+    mkdir src
+    echo -e "${GREEN}src folder created${ENDCOLOR}"
+fi
+sleep 3
+
+# move into src folder
+echo -e "${BLUE}Moving into src folder...${ENDCOLOR}"
+cd src
+
+# create a main.ts file
+echo -e "${BLUE}Creating main.ts file...${ENDCOLOR}"
+if [ -f main.ts ]; then
+    echo -e "${GREEN}main.ts file exists.${ENDCOLOR}"
+else
+    echo -e "${RED}main.ts file does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating main.ts file...${ENDCOLOR}"
+    touch main.ts
+    echo -e "${GREEN}main.ts file created${ENDCOLOR}"
+fi
+sleep 3
+
+# add content to main.ts file
+echo -e "${BLUE}Adding content to main.ts file...${ENDCOLOR}"
+if [ -s main.ts ]; then
+    echo -e "${YELLOW}main.ts is not empty....${ENDCOLOR}"
+else
+    echo -e "${RED}main.ts is empty...${ENDCOLOR}"
+    echo -e "${YELLOW}Adding content to main.ts...${ENDCOLOR}"
+    echo 'import { Controller, Module, Get } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+
+@Controller()
+class AppController {
+    @Get()
+    getRootRoute() {
+        return "Hello World";
+    }
+}
+
+@Module({
+    controllers: [AppController],
+})
+
+class AppModule {}
+
+async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    await app.listen(9000);
+    console.log("Application is running on: ", await app.getUrl());
+}
+
+bootstrap();' >> main.ts
+echo -e "${GREEN}main.ts updated${ENDCOLOR}"
+fi
+sleep 3
+
+# move out of src folder
+echo -e "${BLUE}Moving out of src folder...${ENDCOLOR}"
+cd ..
+
+# create file for comprobation of the configuration of Nestjs using curl
+echo -e "${BLUE}Creating file for comprobation of the configuration of Nestjs using curl...${ENDCOLOR}"
+if [ -f curlTest ]; then
+    echo -e "${GREEN}curlTest file exists.${ENDCOLOR}"
+else
+    echo -e "${RED}curlTest file does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating curlTest file...${ENDCOLOR}"
+    touch curlTest
+    echo -e "${GREEN}curlTest file created${ENDCOLOR}"
+fi
+
+# add content to curlTest file
+echo -e "${BLUE}Adding content to curlTest file...${ENDCOLOR}"
+if [ -s curlTest ]; then
+    echo -e "${YELLOW}curlTest is not empty....${ENDCOLOR}"
+else
+    echo -e "${RED}curlTest is empty...${ENDCOLOR}"
+    echo -e "${YELLOW}Adding content to curlTest...${ENDCOLOR}"
+    echo '#!/usr/bin/env bash' >> curlTest
+    echo 'curl -X GET http://localhost:9000' >> curlTest
+    echo -e "${GREEN}curlTest updated${ENDCOLOR}"
+fi
+sleep 3
+
+# add permission to curlTest file
+echo -e "${BLUE}Adding permission to curlTest file...${ENDCOLOR}"
+chmod u+x curlTest
+sleep 3
+
+# test if the content was added to main.ts file
+echo -e "${BLUE}Testing if the content was added to main.ts file...${ENDCOLOR}"
+npx ts-node-dev src/main.ts -y
+
+#curl localhost:9000
+
+# test http request to localhost:9000
+echo -e "${BLUE}Testing http request to localhost:9000...${ENDCOLOR}"
+
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}main.ts file is working${ENDCOLOR}"
+else
+    echo -e "${RED}main.ts file is not working${ENDCOLOR}"
+fi
+sleep 3
+
+echo -e "${BLUE}next step is to Start the app${ENDCOLOR}"
+sleep 3
+
+# create nest test folder
+echo -e "${BLUE}Creating nest test folder...${ENDCOLOR}"
+if [ -d "nest-test" ]; then
+    echo -e "${GREEN}nest-test folder exists.${ENDCOLOR}"
+else
+    echo -e "${RED}nest-test folder does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating nest-test folder...${ENDCOLOR}"
+    mkdir nest-test
+    echo -e "${GREEN}nest-test folder created${ENDCOLOR}"
+fi
+
+# move into nest-test folder
+echo -e "${BLUE}Moving into nest-test folder...${ENDCOLOR}"
+cd nest-test
+
+# create nest test file
+echo -e "${BLUE}Creating nest test file...${ENDCOLOR}"
+if [ -f nest-test.ts ]; then
+    echo -e "${GREEN}nest-test.ts file exists.${ENDCOLOR}"
+else
+    echo -e "${RED}nest-test.ts file does not exist.${ENDCOLOR}"
+    echo -e "${YELLOW}Creating nest-test.ts file...${ENDCOLOR}"
+    touch nest-test.ts
+    echo -e "${GREEN}nest-test.ts file created${ENDCOLOR}"
+fi
+sleep 3
+
+# move out of nest-test folder
+echo -e "${BLUE}Moving out of nest-test folder...${ENDCOLOR}"
+cd ..
+
+# Start the app
+echo -e "${BLUE}next step is to Start the app${ENDCOLOR}"
+
+sleep 3
+echo -e "${BLUE}Happy Coding${ENDCOLOR}"
